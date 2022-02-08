@@ -1,4 +1,5 @@
 const express = require('express');
+const { send } = require('express/lib/response');
 const { v4: uuidv4 } = require('uuid')
 
 const app = express();
@@ -94,6 +95,18 @@ app.post("/withdraw", verifyIfExistsAccoutCPF, (req, res) => {
 
     return res.status(201).send();
 })
+
+app.get("/statement/date", verifyIfExistsAccoutCPF, (req, res) => {
+    const { customer } = req;
+    const { date } = req.query;
+
+    const dateFormat = new Date(date + " 00:00");
+
+    const statement = customer.statement.filter((statement) => statement.created_at.toDateString() === 
+    new Date (dateFormat).toDateString())
+
+    return res.json(statement);
+});
 
 app.listen(3333);
 
